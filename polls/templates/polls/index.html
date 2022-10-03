@@ -1,0 +1,16 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load render_table from django_tables2 %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+
+{% block title %}Polls Home{% endblock %}
+
+{% block content %}
+    {% if table %}
+        <br>
+        {% render_table table %}
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+{% endblock %}

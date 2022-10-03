@@ -1,0 +1,12 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Contact List{% endblock %}
+{% block content %}
+<body>
+    <h1>Contact List</h1>
+    <a href='{% url "polls:contact_add" %}'>Add contact</a>
+    {% for contact in user_contact_list %}
+        <p>{{contact.first_name}}: {{contact.last_name}}</p>
+    {% endfor %}
+</body>
+{% endblock %}

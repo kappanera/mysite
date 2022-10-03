@@ -1,0 +1,78 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load render_table from django_tables2 %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+
+{% block title %}Address Book{% endblock %}
+{% block content %}
+    {% if formset.errors %}
+        {% for error_dict in formset.errors %}
+            {% for error in error_dict %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <div id="formset_errors">
+                        {% for key, value in error.values %}
+                            <strong>{{ value }}</strong>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor%}
+    {% endif %}
+    <br>
+<br>
+    <form class="form-horizontal" id="form-container" method="POST">
+        {% csrf_token %}
+        {{formset.management_form}}
+        {% for form in formset %}
+            <div class="contact-form row form-row spacer">
+            <div class="col-8">
+                <div class="input-group">
+                    {{form.as_p}}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button id="create" type="submit">Create Contacts</button>
+        <button id="add-form" type="button">Add Another Contact</button>
+    </form>
+    <br>
+    <br>
+
+
+    {% if table %}
+        <br>
+        {% render_table table %}
+    {% else %}
+        <p>No contacts.</p>
+    {% endif %}
+
+
+
+    <script>
+        let contactForm = document.querySelectorAll(".contact-form")
+        let container = document.querySelector("#form-container")
+        let addButton = document.querySelector("#add-form")
+        let createButton = document.querySelector("#create")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = contactForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = contactForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, createButton)
+            
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
+{% endblock %}
